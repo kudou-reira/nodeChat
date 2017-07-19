@@ -7,10 +7,6 @@ socket.on('connect', function() {
 //        text: 'hey, this is andrew'
 //    });
     
-    socket.emit('createMessage', {
-        from: 'byakura',
-        text: 'hello, welcome'
-    });
 });
             
 socket.on('disconnect', function() {
