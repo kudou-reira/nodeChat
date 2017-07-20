@@ -2,6 +2,7 @@ const path = require('path');
 const http = require('http');
 const socketIO = require('socket.io');
 const express = require('express');
+const {generateMessage} = require('./utils/message');
 
 const publicPath = path.join(__dirname, '../public');
 
@@ -18,16 +19,9 @@ app.use(express.static(publicPath));
 io.on('connection', (socket) => {
     console.log('new user connected')
     
-    socket.emit('newMessage', {
-        from: 'admin',
-        text: 'welcome to the chat app'
-    });
+    socket.emit('newMessage', generateMessage('admin', 'welcome to the chat app'));
     
-    socket.broadcast.emit('newMessage', {
-        from: 'admin',
-        text: 'new user joined',
-        createdAt: new Date().getTime()
-    });
+    socket.broadcast.emit('newMessage', generateMessage('admin', 'new user joined'));
     
     //emit sends custom data
 //    socket.emit('newEmail', {
@@ -44,11 +38,7 @@ io.on('connection', (socket) => {
     
     socket.on('createMessage', (message) => {
         console.log('createMessage', message);
-        io.emit('newMessage', {
-            from: message.from,
-            text: message.text,
-            createdAt: new Date().getTime()
-        });
+        io.emit('newMessage', generateMessage(message.from, message.text));
         
 //        socket.broadcast.emit('newMessage', {
 //            from: message.from,
@@ -62,7 +52,7 @@ io.on('connection', (socket) => {
     });
 });
 
-server.listen(port,  () => {
+server.listen(port, () => {
     console.log('started on port ' + port) 
 });
 
