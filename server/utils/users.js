@@ -1,14 +1,3 @@
-[{
-    id: '/@2321552132',
-    name: 'andrew',
-    room: 'office'
-}]
-
-// addUser(id, name, room)
-// removeUser(id)
-// getUser(id)
-// getUserList(room)
-
 class Users {
     constructor(){
         this.users = [];
@@ -21,11 +10,15 @@ class Users {
     }
     
     removeUser(id) {
-        var removedId = this.users.filter((user) => {
-           return user.id != id; 
-        });
         
-        return removedId;
+        var user = this.getUser(id);
+        if(user){
+            this.users = this.users.filter((user) => {
+               return user.id !== id
+            });
+        }
+        
+        return user;
     }
     
     getUser(id){

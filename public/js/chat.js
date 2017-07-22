@@ -18,7 +18,7 @@ function scrollToBottom() {
 }
 
 //this part works on connecting to a new room
-
+//returns the params
 socket.on('connect', function() {
     console.log('connected to server');
     //deparam from script html
@@ -46,9 +46,18 @@ socket.on('disconnect', function() {
     console.log('disconnected from server');
 });
 
-//socket.on('newEmail', function(email) {
-//    console.log('new email', email);
-//});
+socket.on('updateUserList', function (users) {
+    
+    var ol = jQuery('<ol></ol>');
+    users.forEach(function (user){
+        ol.append(jQuery('<li></li>').text(user));
+    })
+    
+    //replace with new version
+    jQuery('#users').html(ol);
+    
+    console.log('Users list', users);
+});
 
 socket.on('newMessage', function(message) {
     var formattedTime = moment(message.createdAt).format('k:mm');
