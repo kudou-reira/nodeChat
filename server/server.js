@@ -3,6 +3,7 @@ const http = require('http');
 const socketIO = require('socket.io');
 const express = require('express');
 const {generateMessage, generateLocationMessage} = require('./utils/message');
+const {isRealString} = require('./utils/validation');
 
 
 const publicPath = path.join(__dirname, '../public');
@@ -19,23 +20,19 @@ app.use(express.static(publicPath));
 
 io.on('connection', (socket) => {
     console.log('new user connected')
-    
-    socket.emit('newMessage', generateMessage('admin', 'welcome to the chat app'));
-    
-    socket.broadcast.emit('newMessage', generateMessage('admin', 'new user joined'));
-    
-    //emit sends custom data
-//    socket.emit('newEmail', {
-//        from: 'mike@example.com',
-//        text: 'what is going on',
-//        createdAt: 123
-//    });
-    
 
-    
-//    socket.on('createEmail', (newEmail) => {
-//        console.log('createEmail', newEmail);
-//    });
+    socket.on('join', (params, callback) => {
+        if(!isRealString(params.name) || !isRealString(params.room)){
+            callback('name/room name are required!');
+        }
+        
+        socket.join(params.room)
+        
+        socket.emit('newMessage', generateMessage('admin', 'welcome to the chat app'));
+        socket.broadcast.to(params.room).emit('newMessage', generateMessage('admin', `${params.name}  joined`));
+        callback();
+        //information here doesn't persist though
+    });
     
     socket.on('createMessage', (message, callback) => {
         console.log('createMessage', message);

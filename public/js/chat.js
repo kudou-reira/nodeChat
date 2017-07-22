@@ -17,9 +17,24 @@ function scrollToBottom() {
     }
 }
 
+//this part works on connecting to a new room
+
 socket.on('connect', function() {
     console.log('connected to server');
+    //deparam from script html
+    //send to server.js
+    var params = jQuery.deparam(window.location.search);
     
+    socket.emit('join', params, function(err) {
+        if(err) {
+            alert(err);
+            window.location.href = '/';
+        }
+        
+        else {
+            console.log('no error');
+        }
+    });
 //    socket.emit('createEmail', {
 //        to: 'jen@example.com',
 //        text: 'hey, this is andrew'
